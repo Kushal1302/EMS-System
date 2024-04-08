@@ -1,6 +1,11 @@
 import React , {useState} from 'react'
-import {Box,Typography,Grid } from '@mui/material'
+import {Box,Typography,Grid,Button } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid';
+import AddEmployeeModal from './AddEmployeeModal';
+import {useQuery} from 'react-query'
+import axios from 'axios'
+import { BASE_URL } from '../../../public/constant';
+import ConfirmModal from './ConfirmModal';
 
 const AllEmployee = ({open}) => {
     const pageStyle  = {
@@ -17,10 +22,12 @@ const AllEmployee = ({open}) => {
         pageSize:5,
         page:0
     })
+    const [openModal , setModalOpen] = useState(false)
+    const [openConfirmModal,setConfirmModalOpen] = useState(false)
     const columns = [
         { field: "id", headerName: "ID", width: 100 },
         {
-          field: "employeeName",
+          field: "name",
           headerName: "Employee Name",
           width: 330,
         },
@@ -30,19 +37,49 @@ const AllEmployee = ({open}) => {
           headerName: "Salary",
           width: 230,
         },
-    ]
-    const rows = [
         {
-            id:1,
-            employeeName:"Kushal Kumar",
-            department:"Software Development",
-            salary:"85000"
-        }
+            field: "action",
+            headerName: "Action",
+            width: 230,
+            renderCell:(params) => {
+                return (
+                    <Button variant='contained' sx={{background:"#7DA0FA"}} onClick={() =>{
+                        setConfirmModalOpen(true)
+                        setEmpId(params.row.employeeId)
+                    }}>Delete</Button>
+                )
+            }
+          },
     ]
+    const [rows , setRows] = useState([])
+    const [empId , setEmpId] = useState("")
+    const [RowCount,setRowCount] = useState()
+    const fetchEmployee = () => {
+        return axios.get(`${BASE_URL}/employee/all`)
+    }
+    const {data:employees , refetch} = useQuery(['employee'] , fetchEmployee , {
+        onSuccess:(data) => {
+            const array = data?.data?.data.map((e,i) => {
+                return {
+                    id:i+1,
+                    name:e.name,
+                    age:e.age,
+                    dob:e.dob,
+                    employeeId:e.id
+                }
+            })
+            setRows(array)
+        },
+        enabled:rows.length === 0,
+        onError:(err) => {
+            console.log(err)
+        }
+    })
   return (
     <Box sx={pageStyle}>
-        <Box>
+        <Box sx={{display:'flex' , justifyContent:'space-between' , alignItems:'center'}}>
             <Typography variant='h5' fontWeight={'bold'} marginBottom={2}>All Employees</Typography>
+            <Button variant="contained" sx={{background:'#7DA0FA',color:'#fff'}} onClick={() => setModalOpen(true)} >Add Employee</Button>
         </Box>
         <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -51,7 +88,7 @@ const AllEmployee = ({open}) => {
                 pageSizeOptions={[5, 10]}
                 paginationModel={paginationModel}
                 onPaginationModelChange={setPaginationModel}
-                checkboxSelection
+                rowCount={RowCount}
                 sx={{
                     'MuiDataGrid-topContainer':{
                         background:'#7978E9'
@@ -62,6 +99,8 @@ const AllEmployee = ({open}) => {
                 
             />
         </Box>
+        {openModal && <AddEmployeeModal openModal={openModal} setModalOpen={setModalOpen} refetch={refetch}/>}
+        {openConfirmModal && <ConfirmModal openConfirmModal={openConfirmModal} setConfirmModalOpen={setConfirmModalOpen} refetch={refetch} empId={empId}/>}
     </Box>
   )
 }

@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import {Box,Typography,Grid } from '@mui/material'
 import back from '../../assets/background.jpg'
 import { DataGrid } from '@mui/x-data-grid';
+import {useQuery} from 'react-query'
+import axios from 'axios'
+import { BASE_URL } from '../../../public/constant';
 
 const AdminHome = ({open}) => {
     const pageStyle  = {
@@ -21,7 +24,7 @@ const AdminHome = ({open}) => {
     const columns = [
         { field: "id", headerName: "ID", width: 100 },
         {
-          field: "employeeName",
+          field: "name",
           headerName: "Employee Name",
           width: 330,
         },
@@ -32,14 +35,29 @@ const AdminHome = ({open}) => {
           width: 230,
         },
     ]
-    const rows = [
-        {
-            id:1,
-            employeeName:"Kushal Kumar",
-            department:"Software Development",
-            salary:"85000"
+    const [rows , setRows] = useState([])
+    const [RowCount,setRowCount] = useState()
+    const fetchEmployee = () => {
+        return axios.get(`${BASE_URL}/employee/all`)
+    }
+    const {data:employees} = useQuery(['employee'] , fetchEmployee , {
+        onSuccess:(data) => {
+            const array = data?.data?.data.map((e,i) => {
+                return {
+                    id:i+1,
+                    name:e.name,
+                    age:e.age,
+                    dob:e.dob
+                }
+            })
+            setRows(array)
+        },
+        enabled:rows.length === 0,
+        onError:(err) => {
+            console.log(err)
         }
-    ]
+    })
+
   return (
     <>
     <Box sx={pageStyle}>
@@ -61,7 +79,7 @@ const AdminHome = ({open}) => {
                                 Total Employees
                             </Typography>
                             <Typography variant='h5' >
-                                20
+                                {rows.length}
                             </Typography>
                         </Box>
                     </Grid>
