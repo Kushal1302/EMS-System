@@ -8,6 +8,7 @@ import Login from './Components/Login'
 import {useNavigate} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
 import AllLeaves from './Components/Admin/AllLeaves'
+import {Button} from '@mui/material'
 
 const App = () => {
   const [open , setOpen] = useState(false)
@@ -22,7 +23,12 @@ const App = () => {
           <Route path="/allEmployee" element={<AllEmployee open={open}/>}/>
           <Route path="/leaves" element={<AllLeaves open={open}/>}/>
         </Route>
-        <Route path='*' element={<h1>404 page not found</h1>}/>
+        <Route path='*' element={<>
+          <Button onClick={() => {
+            localStorage.removeItem("jwt")
+            return navigate('/')
+          }}>Logout</Button>
+        </>}/>
       </Routes>
     </div>
   )
