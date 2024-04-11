@@ -1,54 +1,123 @@
 import React, { useState } from "react";
-import { Modal, Box ,Grid,Typography,TextField,Button} from "@mui/material";
-import {useMutation} from 'react-query'
-import axios from 'axios'
+import { Modal, Box, Grid, Typography, TextField, Button, IconButton } from "@mui/material";
+import { Close as CloseIcon } from '@mui/icons-material';
+import { useMutation } from 'react-query';
+import axios from 'axios';
 import { BASE_URL } from "../../../public/constant";
 
-const AddEmployeeModal = ({ openModal, setModalOpen,refetch }) => {
-    const [employeeDetail , setEmployeeDetail] = useState({role:"employee"})
-    const handleChange = (e) => {
-        setEmployeeDetail({
-            ...employeeDetail,
-            [e.target.name]:e.target.value
-        })
+const AddEmployeeModal = ({ openModal, setModalOpen, refetch }) => {
+  const [employeeDetail, setEmployeeDetail] = useState({ role: "employee" });
+
+  const handleChange = (e) => {
+    setEmployeeDetail({
+      ...employeeDetail,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = () => {
+    addEmployee();
+  };
+
+  const AddEmployee = () => {
+    return axios.post(`${BASE_URL}/employee`, employeeDetail);
+  };
+
+  const { mutate: addEmployee } = useMutation(AddEmployee, {
+    onSuccess: (data) => {
+      console.log(data);
+      setModalOpen(false);
+      refetch();
+    },
+    onError: (err) => {
+      console.log(err);
     }
-    const handleSubmit = () => {
-        addEmployee()
-    }
-    const AddEmployee = () => {
-        return axios.post(`${BASE_URL}/employee`,employeeDetail)
-    }
-    const {mutate : addEmployee} = useMutation(AddEmployee , {
-        onSuccess:(data) => {
-            console.log(data)
-            setModalOpen(false)
-            refetch()
-        },
-        onError:(err) => {
-            console.log(err)
-        }
-    })
+  });
+
   return (
     <Modal
       open={openModal}
       onClose={() => setModalOpen(false)}
-      variant="persistant"
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{display:'flex', alignItems:'center' , justifyContent:'center'}}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
-      <Box sx={{ width: 500, height: 500, background: "#fff",borderRadius:3 ,p:2 , '@media(max-width:540px)':{ width: 350, height: 400} }}>
-        <Grid container lg={12} md={12} sm={12} xs={12} sx={{display:'flex',justifyContent:'center'}}>
-            <Grid item lg={10} md={10} sm={10} xs={12} sx={{textAlign:'center'}}>
-                <Typography variant="h5">EMS</Typography>
-                <TextField placeholder="Enter Name" fullWidth name="name" onChange={handleChange}/>
-                <TextField placeholder="Enter Email" fullWidth name="email" onChange={handleChange}/>
-                <TextField placeholder="Enter Age" fullWidth name="age" onChange={handleChange}/>
-                <TextField placeholder="Enter Password" fullWidth name="password" onChange={handleChange}/>
-                <TextField type="date" placeholder="Enter DOB" fullWidth name="dob" onChange={handleChange}/>
-                <Button variant="contained" sx={{bgcolor:'#F3797E' , marginTop:2}} onClick={handleSubmit}>Save</Button>
-            </Grid>
+      <Box
+        sx={{
+          width: 400,
+          backgroundColor: "#fff",
+          borderRadius: 8,
+          p: 3,
+        }}
+      >
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Typography variant="h5" gutterBottom>EMS</Typography>
+          <IconButton onClick={() => setModalOpen(false)}>
+            <CloseIcon />
+          </IconButton>
         </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Name"
+              name="name"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Age"
+              name="age"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Department"
+              name="department"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Salary"
+              name="salary"
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="DOB"
+              type="date"
+              name="dob"
+              onChange={handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
+        </Grid>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ bgcolor: '#F3797E', mt: 2 }}
+          onClick={handleSubmit}
+        >
+          Save
+        </Button>
       </Box>
     </Modal>
   );

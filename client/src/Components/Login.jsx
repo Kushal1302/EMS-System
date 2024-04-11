@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, TextField, Typography, Container } from '@mui/material';
 import { styled } from '@mui/system';
 import {useMutation} from 'react-query'
@@ -39,6 +39,11 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const Login = () => {
+  const {token , user} = JSON.parse(localStorage.getItem("jwt")) ?? {}
+  useEffect(() => {
+    if(token && user?.role === "admin") navigate('/adminHome')
+    if(token && user?.role === "employee") navigate('/employeeHome')
+  })
   const [loginDetails , setLoginDetails] = useState({
     email:"",
     password:""
@@ -61,12 +66,17 @@ const Login = () => {
   }
   const {mutate} = useMutation(LoginFunc , {
     onSuccess:(data) => {
-        localStorage.setItem("jwt" , JSON.stringify(data?.data))
+        
         if(data?.data?.user.role === "admin") {
             ToastMessage(data?.data.message)
+            localStorage.setItem("jwt" , JSON.stringify(data?.data))
             return navigate('/adminHome')
         }
-        if(data?.data?.user.role === "employee") return navigate('/employeeHome')
+        if(data?.data?.user.role === "employee") {
+          localStorage.setItem("jwt" , JSON.stringify(data?.data))
+          return navigate('/employeeHome')
+        }
+        else toast.error(data?.data.message)
     },
     onError:(err) => {
         console.log(err.message)

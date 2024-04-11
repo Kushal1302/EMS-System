@@ -4,20 +4,27 @@ import bcrypt from 'bcrypt'
 export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email , password)
     const data = await prisma.user.findUnique({
       where: {
         email: email,
       },
+      include:{
+        admin:true,
+        employee:true
+      }
     });
     const matchedPassword = await bcrypt.compare(password , data.password)
-    if (!matchedPassword) {
-      const token = jwt.sign(data, "secret_key");
+    if (matchedPassword) {
+      const token = jwt.sign({id:data.id,email:data.email,role:data.role}, "secret_key");
       return res.json({
         token,
         user: {
           email: data.email,
           role: data.role,
+          name:(data.role === "admin" ? data.admin.name : data.employee.name )
+        },
+        data:{
+          ...(data.role === "admin" ? data.admin : data.employee )
         },
         message:"Login successfull"
       });

@@ -1,18 +1,22 @@
 import prisma from "../db/db.js"
-
+import bcrypt from 'bcrypt'
+const salt = 10
 export const addEmployee = async (req , res) => {
     try {
         const employeeDetail = req.body
+        const hashedPassword = await bcrypt.hash(employeeDetail.password , salt)
         const data = await prisma.user.create({
             data:{
                 email:employeeDetail.email,
-                password:employeeDetail.password,
+                password:hashedPassword,
                 role:employeeDetail.role,
                 employee:{
                     create:{
                             name:employeeDetail.name,
                             age:employeeDetail.age,
-                            dob:employeeDetail.dob
+                            dob:employeeDetail.dob,
+                            department:employeeDetail.department,
+                            salary:employeeDetail.salary
                     }
                 }
             }
@@ -28,7 +32,11 @@ export const addEmployee = async (req , res) => {
 }
 export const AllEmployee = async  (req , res) => {
     try {
-        const data = await prisma.employee.findMany()
+        const data = await prisma.employee.findMany({
+            orderBy:{
+                createdAt:'desc'
+            }
+        })
         return res.json({
             data:data
         })
