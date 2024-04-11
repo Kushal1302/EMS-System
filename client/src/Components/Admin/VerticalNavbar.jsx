@@ -17,6 +17,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {useNavigate} from 'react-router-dom'
 // bg = "#F5F7FF"
 
@@ -164,6 +165,30 @@ export default function VerticalNavbar({open , setOpen}) {
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
                   Leave Requests
+              </ListItemText>
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: 'block', marginBottom:1 }} onClick={() => {
+            localStorage.removeItem("jwt")
+            return navigate('/')
+          }}>
+            <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  ...TransitionOnItems
+                }}
+            >
+              <ListItemIcon sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}>
+                <LogoutIcon/>
+              </ListItemIcon>
+              <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
+                  Log Out
               </ListItemText>
             </ListItemButton>
           </ListItem>
