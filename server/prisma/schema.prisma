@@ -36,8 +36,11 @@ model Employee {
   name      String?
   age       String?
   dob       String?
+  department  String?
+  salary      String?
   userId    String @db.ObjectId
   user      User     @relation(fields: [userId],references: [id],onDelete: Cascade)
+  leaves    Leaves?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   @@unique([userId])
@@ -45,4 +48,25 @@ model Employee {
 enum Roles {
   admin
   employee
+}
+model Leaves {
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  type leaveTypes?
+  description  String?
+  empId   String @db.ObjectId @unique
+  startDate  String?
+  endDate    String?
+  status    leaveStatus?  @default(pending)
+  employee   Employee  @relation(fields: [empId] , references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+enum leaveStatus {
+  pending
+  approved
+  cancelled
+}
+enum leaveTypes {
+  casual
+  medical
 }
