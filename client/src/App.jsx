@@ -7,14 +7,11 @@ import AllEmployee from './Components/Admin/AllEmployee'
 import Login from './Components/Login'
 import {useNavigate} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
+import AllLeaves from './Components/Admin/AllLeaves'
 
 const App = () => {
   const [open , setOpen] = useState(false)
   const navigate = useNavigate()
-  const {user , token} = JSON.parse(localStorage.getItem("jwt")) ?? {}
-  useEffect(() => {
-    if(token && user?.role === "admin") navigate('/adminHome')
-  })
   return (
     <div>
       <Toaster position='top-right'/>
@@ -23,8 +20,9 @@ const App = () => {
         <Route element = {<AdminProtectedRoute open={open} setOpen={setOpen}/>}>
           <Route path="/adminHome" element={<AdminHome open={open}/>}/>
           <Route path="/allEmployee" element={<AllEmployee open={open}/>}/>
-          <Route path="/leaves" element={<>All Leaves</>}/>
+          <Route path="/leaves" element={<AllLeaves open={open}/>}/>
         </Route>
+        <Route path='*' element={<h1>404 page not found</h1>}/>
       </Routes>
     </div>
   )

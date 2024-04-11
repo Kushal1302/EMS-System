@@ -1,11 +1,16 @@
 import prisma from "../db/db.js"
+import bcrypt from 'bcrypt'
+const salt = 10
 
 export const addAdmin = async (req , res) =>{
-    const data = req.body
+    const {email,password,role} = req.body
     try {
+        const hashedPassword = await bcrypt.hash(password , salt)
         const data = await prisma.user.create({
             data:{
-
+                email:email,
+                password:hashedPassword,
+                role:role
             }
         })
         return res.json({
@@ -13,7 +18,8 @@ export const addAdmin = async (req , res) =>{
         })
     } catch (error) {
         return res.json({
-            message:"Something Went Wrong on server"
+            message:"Something Went Wrong on server",
+            error:error.message
         })
     }
 }

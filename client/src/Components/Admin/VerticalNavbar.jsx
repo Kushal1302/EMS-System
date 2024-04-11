@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React, { useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -12,14 +12,15 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {useNavigate} from 'react-router-dom'
-// bg = "#F5F7FF"
+import { useNavigate } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Avatar from '@mui/material/Avatar';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const drawerWidth = 240;
 
@@ -69,20 +70,19 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
   }),
 );
-const TransitionOnItems = {
-  transition:'.5s',
-  ':hover':{
-    backgroundColor:'#4B49AC',
-    color:"#fff",
-    borderRadius:2
-    
-  }
-}
 
-export default function VerticalNavbar({open , setOpen}) {
+const TransitionOnItems = {
+  transition: '.5s',
+  ':hover': {
+    backgroundColor: '#4B49AC',
+    color: "#fff",
+    borderRadius: 2
+  }
+};
+
+export default function VerticalNavbar({ open, setOpen }) {
   const theme = useTheme();
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -95,6 +95,32 @@ export default function VerticalNavbar({open , setOpen}) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          width: `calc(100% - ${open ? drawerWidth : 0}px)`,
+          ml: open ? `${drawerWidth}px` : 0,
+          transition: (theme) =>
+            theme.transitions.create(['width', 'margin'], {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          >
+            <MenuIcon/>
+          </IconButton>
+          <Avatar sx={{ ml: 'auto' }}>KK</Avatar>
+        </Toolbar>
+      </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -102,99 +128,96 @@ export default function VerticalNavbar({open , setOpen}) {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List sx={{p:1}}>
-          <ListItem disablePadding sx={{ display: 'block' , marginBottom:1  }} onClick={() => navigate('/')}>
+        <List sx={{ p: 1 }}>
+          <ListItem disablePadding sx={{ display: 'block', marginBottom: 1 }} onClick={() => navigate('/adminHome')}>
             <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  ...TransitionOnItems,
-                  
-                  
-                }}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                ...TransitionOnItems,
+              }}
             >
               <ListItemIcon sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}>
-                <HomeIcon/>
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}>
+                <HomeIcon />
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
-                  Dashboard
+                Dashboard
               </ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block', marginBottom:1 }} onClick={() => navigate('/employee')}>
+          <ListItem disablePadding sx={{ display: 'block', marginBottom: 1 }} onClick={() => navigate('/allEmployee')}>
             <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  ...TransitionOnItems
-                }}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                ...TransitionOnItems
+              }}
             >
               <ListItemIcon sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}>
-                <SupervisorAccountIcon/>
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}>
+                <SupervisorAccountIcon />
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
-                  All Employees
+                All Employees
               </ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block', marginBottom:1 }} onClick={() => navigate('/leaves')}>
+          <ListItem disablePadding sx={{ display: 'block', marginBottom: 1 }} onClick={() => navigate('/leaves')}>
             <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  ...TransitionOnItems
-                }}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                ...TransitionOnItems
+              }}
             >
               <ListItemIcon sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}>
-                <AssessmentIcon/>
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}>
+                <AssessmentIcon />
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
-                  Leave Requests
+                Leave Requests
               </ListItemText>
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding sx={{ display: 'block', marginBottom:1 }} onClick={() => {
+          <ListItem disablePadding sx={{ display: 'block', marginBottom: 1 }} onClick={() => {
             localStorage.removeItem("jwt")
             return navigate('/')
           }}>
             <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  ...TransitionOnItems
-                }}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                ...TransitionOnItems
+              }}
             >
               <ListItemIcon sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}>
-                <LogoutIcon/>
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}>
+                <LogoutIcon />
               </ListItemIcon>
               <ListItemText sx={{ opacity: open ? 1 : 0 }} className=''>
-                  Log Out
+                Log Out
               </ListItemText>
             </ListItemButton>
           </ListItem>
         </List>
         <Divider />
-       
       </Drawer>
     </Box>
   );
