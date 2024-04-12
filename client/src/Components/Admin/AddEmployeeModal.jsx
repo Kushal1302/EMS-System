@@ -73,6 +73,14 @@ const AddEmployeeModal = ({ openModal, setModalOpen, refetch }) => {
               onChange={handleChange}
             />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                onChange={handleChange}
+              />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
