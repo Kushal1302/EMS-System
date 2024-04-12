@@ -30,5 +30,7 @@ Client Setup
 4. Create a constant.js in public folder in the client directory and add the base URL of your server:
    BASE_URL=http://localhost:server_port
 5. Start the client development server:
-  ```bash
-   npm run dev
+   ```bash
+   npm run dev 
+```vbnet
+  Let's make managing employees a breeze! 🚀
