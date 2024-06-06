@@ -1,4 +1,3 @@
-![Alt text](https://drawdb.vercel.app/editor)
 # EMS System
 
 ## Description
